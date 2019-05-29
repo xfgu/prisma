@@ -3,7 +3,11 @@ module.exports = {
   // Please don't change this file manually but run `prisma generate` to update it.
   // For more information, please read the docs: https://www.prisma.io/docs/prisma-client/
 
-/* GraphQL */ `type AggregateItem {
+/* GraphQL */ `type AggregateCart {
+  count: Int!
+}
+
+type AggregateItem {
   count: Int!
 }
 
@@ -19,12 +23,227 @@ type BatchPayload {
   count: Long!
 }
 
+type Cart {
+  id: ID!
+  count: Int!
+  user: User!
+  item: Item!
+}
+
+type CartConnection {
+  pageInfo: PageInfo!
+  edges: [CartEdge]!
+  aggregate: AggregateCart!
+}
+
+input CartCreateInput {
+  id: ID
+  count: Int
+  user: UserCreateOneWithoutCartsInput!
+  item: ItemCreateOneWithoutCartsInput!
+}
+
+input CartCreateManyWithoutItemInput {
+  create: [CartCreateWithoutItemInput!]
+  connect: [CartWhereUniqueInput!]
+}
+
+input CartCreateManyWithoutUserInput {
+  create: [CartCreateWithoutUserInput!]
+  connect: [CartWhereUniqueInput!]
+}
+
+input CartCreateWithoutItemInput {
+  id: ID
+  count: Int
+  user: UserCreateOneWithoutCartsInput!
+}
+
+input CartCreateWithoutUserInput {
+  id: ID
+  count: Int
+  item: ItemCreateOneWithoutCartsInput!
+}
+
+type CartEdge {
+  node: Cart!
+  cursor: String!
+}
+
+enum CartOrderByInput {
+  id_ASC
+  id_DESC
+  count_ASC
+  count_DESC
+}
+
+type CartPreviousValues {
+  id: ID!
+  count: Int!
+}
+
+input CartScalarWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  count: Int
+  count_not: Int
+  count_in: [Int!]
+  count_not_in: [Int!]
+  count_lt: Int
+  count_lte: Int
+  count_gt: Int
+  count_gte: Int
+  AND: [CartScalarWhereInput!]
+  OR: [CartScalarWhereInput!]
+  NOT: [CartScalarWhereInput!]
+}
+
+type CartSubscriptionPayload {
+  mutation: MutationType!
+  node: Cart
+  updatedFields: [String!]
+  previousValues: CartPreviousValues
+}
+
+input CartSubscriptionWhereInput {
+  mutation_in: [MutationType!]
+  updatedFields_contains: String
+  updatedFields_contains_every: [String!]
+  updatedFields_contains_some: [String!]
+  node: CartWhereInput
+  AND: [CartSubscriptionWhereInput!]
+  OR: [CartSubscriptionWhereInput!]
+  NOT: [CartSubscriptionWhereInput!]
+}
+
+input CartUpdateInput {
+  count: Int
+  user: UserUpdateOneRequiredWithoutCartsInput
+  item: ItemUpdateOneRequiredWithoutCartsInput
+}
+
+input CartUpdateManyDataInput {
+  count: Int
+}
+
+input CartUpdateManyMutationInput {
+  count: Int
+}
+
+input CartUpdateManyWithoutItemInput {
+  create: [CartCreateWithoutItemInput!]
+  delete: [CartWhereUniqueInput!]
+  connect: [CartWhereUniqueInput!]
+  set: [CartWhereUniqueInput!]
+  disconnect: [CartWhereUniqueInput!]
+  update: [CartUpdateWithWhereUniqueWithoutItemInput!]
+  upsert: [CartUpsertWithWhereUniqueWithoutItemInput!]
+  deleteMany: [CartScalarWhereInput!]
+  updateMany: [CartUpdateManyWithWhereNestedInput!]
+}
+
+input CartUpdateManyWithoutUserInput {
+  create: [CartCreateWithoutUserInput!]
+  delete: [CartWhereUniqueInput!]
+  connect: [CartWhereUniqueInput!]
+  set: [CartWhereUniqueInput!]
+  disconnect: [CartWhereUniqueInput!]
+  update: [CartUpdateWithWhereUniqueWithoutUserInput!]
+  upsert: [CartUpsertWithWhereUniqueWithoutUserInput!]
+  deleteMany: [CartScalarWhereInput!]
+  updateMany: [CartUpdateManyWithWhereNestedInput!]
+}
+
+input CartUpdateManyWithWhereNestedInput {
+  where: CartScalarWhereInput!
+  data: CartUpdateManyDataInput!
+}
+
+input CartUpdateWithoutItemDataInput {
+  count: Int
+  user: UserUpdateOneRequiredWithoutCartsInput
+}
+
+input CartUpdateWithoutUserDataInput {
+  count: Int
+  item: ItemUpdateOneRequiredWithoutCartsInput
+}
+
+input CartUpdateWithWhereUniqueWithoutItemInput {
+  where: CartWhereUniqueInput!
+  data: CartUpdateWithoutItemDataInput!
+}
+
+input CartUpdateWithWhereUniqueWithoutUserInput {
+  where: CartWhereUniqueInput!
+  data: CartUpdateWithoutUserDataInput!
+}
+
+input CartUpsertWithWhereUniqueWithoutItemInput {
+  where: CartWhereUniqueInput!
+  update: CartUpdateWithoutItemDataInput!
+  create: CartCreateWithoutItemInput!
+}
+
+input CartUpsertWithWhereUniqueWithoutUserInput {
+  where: CartWhereUniqueInput!
+  update: CartUpdateWithoutUserDataInput!
+  create: CartCreateWithoutUserInput!
+}
+
+input CartWhereInput {
+  id: ID
+  id_not: ID
+  id_in: [ID!]
+  id_not_in: [ID!]
+  id_lt: ID
+  id_lte: ID
+  id_gt: ID
+  id_gte: ID
+  id_contains: ID
+  id_not_contains: ID
+  id_starts_with: ID
+  id_not_starts_with: ID
+  id_ends_with: ID
+  id_not_ends_with: ID
+  count: Int
+  count_not: Int
+  count_in: [Int!]
+  count_not_in: [Int!]
+  count_lt: Int
+  count_lte: Int
+  count_gt: Int
+  count_gte: Int
+  user: UserWhereInput
+  item: ItemWhereInput
+  AND: [CartWhereInput!]
+  OR: [CartWhereInput!]
+  NOT: [CartWhereInput!]
+}
+
+input CartWhereUniqueInput {
+  id: ID
+}
+
 scalar DateTime
 
 type Item {
   id: ID!
   name: String!
   authid: User
+  carts(where: CartWhereInput, orderBy: CartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Cart!]
   img: String
 }
 
@@ -38,6 +257,7 @@ input ItemCreateInput {
   id: ID
   name: String!
   authid: UserCreateOneWithoutItemsInput
+  carts: CartCreateManyWithoutItemInput
   img: String
 }
 
@@ -46,9 +266,22 @@ input ItemCreateManyWithoutAuthidInput {
   connect: [ItemWhereUniqueInput!]
 }
 
+input ItemCreateOneWithoutCartsInput {
+  create: ItemCreateWithoutCartsInput
+  connect: ItemWhereUniqueInput
+}
+
 input ItemCreateWithoutAuthidInput {
   id: ID
   name: String!
+  carts: CartCreateManyWithoutItemInput
+  img: String
+}
+
+input ItemCreateWithoutCartsInput {
+  id: ID
+  name: String!
+  authid: UserCreateOneWithoutItemsInput
   img: String
 }
 
@@ -141,6 +374,7 @@ input ItemSubscriptionWhereInput {
 input ItemUpdateInput {
   name: String
   authid: UserUpdateOneWithoutItemsInput
+  carts: CartUpdateManyWithoutItemInput
   img: String
 }
 
@@ -171,14 +405,33 @@ input ItemUpdateManyWithWhereNestedInput {
   data: ItemUpdateManyDataInput!
 }
 
+input ItemUpdateOneRequiredWithoutCartsInput {
+  create: ItemCreateWithoutCartsInput
+  update: ItemUpdateWithoutCartsDataInput
+  upsert: ItemUpsertWithoutCartsInput
+  connect: ItemWhereUniqueInput
+}
+
 input ItemUpdateWithoutAuthidDataInput {
   name: String
+  carts: CartUpdateManyWithoutItemInput
+  img: String
+}
+
+input ItemUpdateWithoutCartsDataInput {
+  name: String
+  authid: UserUpdateOneWithoutItemsInput
   img: String
 }
 
 input ItemUpdateWithWhereUniqueWithoutAuthidInput {
   where: ItemWhereUniqueInput!
   data: ItemUpdateWithoutAuthidDataInput!
+}
+
+input ItemUpsertWithoutCartsInput {
+  update: ItemUpdateWithoutCartsDataInput!
+  create: ItemCreateWithoutCartsInput!
 }
 
 input ItemUpsertWithWhereUniqueWithoutAuthidInput {
@@ -217,6 +470,9 @@ input ItemWhereInput {
   name_ends_with: String
   name_not_ends_with: String
   authid: UserWhereInput
+  carts_every: CartWhereInput
+  carts_some: CartWhereInput
+  carts_none: CartWhereInput
   img: String
   img_not: String
   img_in: [String!]
@@ -243,6 +499,12 @@ input ItemWhereUniqueInput {
 scalar Long
 
 type Mutation {
+  createCart(data: CartCreateInput!): Cart!
+  updateCart(data: CartUpdateInput!, where: CartWhereUniqueInput!): Cart
+  updateManyCarts(data: CartUpdateManyMutationInput!, where: CartWhereInput): BatchPayload!
+  upsertCart(where: CartWhereUniqueInput!, create: CartCreateInput!, update: CartUpdateInput!): Cart!
+  deleteCart(where: CartWhereUniqueInput!): Cart
+  deleteManyCarts(where: CartWhereInput): BatchPayload!
   createItem(data: ItemCreateInput!): Item!
   updateItem(data: ItemUpdateInput!, where: ItemWhereUniqueInput!): Item
   updateManyItems(data: ItemUpdateManyMutationInput!, where: ItemWhereInput): BatchPayload!
@@ -520,6 +782,9 @@ input PostWhereUniqueInput {
 }
 
 type Query {
+  cart(where: CartWhereUniqueInput!): Cart
+  carts(where: CartWhereInput, orderBy: CartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Cart]!
+  cartsConnection(where: CartWhereInput, orderBy: CartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): CartConnection!
   item(where: ItemWhereUniqueInput!): Item
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item]!
   itemsConnection(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): ItemConnection!
@@ -533,6 +798,7 @@ type Query {
 }
 
 type Subscription {
+  cart(where: CartSubscriptionWhereInput): CartSubscriptionPayload
   item(where: ItemSubscriptionWhereInput): ItemSubscriptionPayload
   post(where: PostSubscriptionWhereInput): PostSubscriptionPayload
   user(where: UserSubscriptionWhereInput): UserSubscriptionPayload
@@ -543,6 +809,7 @@ type User {
   name: String!
   email: String!
   password: String!
+  carts(where: CartWhereInput, orderBy: CartOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Cart!]
   items(where: ItemWhereInput, orderBy: ItemOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Item!]
   posts(where: PostWhereInput, orderBy: PostOrderByInput, skip: Int, after: String, before: String, first: Int, last: Int): [Post!]
 }
@@ -558,8 +825,14 @@ input UserCreateInput {
   name: String!
   email: String!
   password: String!
+  carts: CartCreateManyWithoutUserInput
   items: ItemCreateManyWithoutAuthidInput
   posts: PostCreateManyWithoutAuthidInput
+}
+
+input UserCreateOneWithoutCartsInput {
+  create: UserCreateWithoutCartsInput
+  connect: UserWhereUniqueInput
 }
 
 input UserCreateOneWithoutItemsInput {
@@ -572,11 +845,21 @@ input UserCreateOneWithoutPostsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserCreateWithoutCartsInput {
+  id: ID
+  name: String!
+  email: String!
+  password: String!
+  items: ItemCreateManyWithoutAuthidInput
+  posts: PostCreateManyWithoutAuthidInput
+}
+
 input UserCreateWithoutItemsInput {
   id: ID
   name: String!
   email: String!
   password: String!
+  carts: CartCreateManyWithoutUserInput
   posts: PostCreateManyWithoutAuthidInput
 }
 
@@ -585,6 +868,7 @@ input UserCreateWithoutPostsInput {
   name: String!
   email: String!
   password: String!
+  carts: CartCreateManyWithoutUserInput
   items: ItemCreateManyWithoutAuthidInput
 }
 
@@ -633,6 +917,7 @@ input UserUpdateInput {
   name: String
   email: String
   password: String
+  carts: CartUpdateManyWithoutUserInput
   items: ItemUpdateManyWithoutAuthidInput
   posts: PostUpdateManyWithoutAuthidInput
 }
@@ -641,6 +926,13 @@ input UserUpdateManyMutationInput {
   name: String
   email: String
   password: String
+}
+
+input UserUpdateOneRequiredWithoutCartsInput {
+  create: UserCreateWithoutCartsInput
+  update: UserUpdateWithoutCartsDataInput
+  upsert: UserUpsertWithoutCartsInput
+  connect: UserWhereUniqueInput
 }
 
 input UserUpdateOneWithoutItemsInput {
@@ -661,10 +953,19 @@ input UserUpdateOneWithoutPostsInput {
   connect: UserWhereUniqueInput
 }
 
+input UserUpdateWithoutCartsDataInput {
+  name: String
+  email: String
+  password: String
+  items: ItemUpdateManyWithoutAuthidInput
+  posts: PostUpdateManyWithoutAuthidInput
+}
+
 input UserUpdateWithoutItemsDataInput {
   name: String
   email: String
   password: String
+  carts: CartUpdateManyWithoutUserInput
   posts: PostUpdateManyWithoutAuthidInput
 }
 
@@ -672,7 +973,13 @@ input UserUpdateWithoutPostsDataInput {
   name: String
   email: String
   password: String
+  carts: CartUpdateManyWithoutUserInput
   items: ItemUpdateManyWithoutAuthidInput
+}
+
+input UserUpsertWithoutCartsInput {
+  update: UserUpdateWithoutCartsDataInput!
+  create: UserCreateWithoutCartsInput!
 }
 
 input UserUpsertWithoutItemsInput {
@@ -742,6 +1049,9 @@ input UserWhereInput {
   password_not_starts_with: String
   password_ends_with: String
   password_not_ends_with: String
+  carts_every: CartWhereInput
+  carts_some: CartWhereInput
+  carts_none: CartWhereInput
   items_every: ItemWhereInput
   items_some: ItemWhereInput
   items_none: ItemWhereInput

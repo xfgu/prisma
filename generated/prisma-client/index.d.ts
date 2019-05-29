@@ -16,6 +16,7 @@ export type AtLeastOne<T, U = { [K in keyof T]: Pick<T, K> }> = Partial<T> &
 export type Maybe<T> = T | undefined | null;
 
 export interface Exists {
+  cart: (where?: CartWhereInput) => Promise<boolean>;
   item: (where?: ItemWhereInput) => Promise<boolean>;
   post: (where?: PostWhereInput) => Promise<boolean>;
   user: (where?: UserWhereInput) => Promise<boolean>;
@@ -40,6 +41,25 @@ export interface Prisma {
    * Queries
    */
 
+  cart: (where: CartWhereUniqueInput) => CartNullablePromise;
+  carts: (args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => FragmentableArray<Cart>;
+  cartsConnection: (args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => CartConnectionPromise;
   item: (where: ItemWhereUniqueInput) => ItemNullablePromise;
   items: (args?: {
     where?: ItemWhereInput;
@@ -103,6 +123,22 @@ export interface Prisma {
    * Mutations
    */
 
+  createCart: (data: CartCreateInput) => CartPromise;
+  updateCart: (args: {
+    data: CartUpdateInput;
+    where: CartWhereUniqueInput;
+  }) => CartPromise;
+  updateManyCarts: (args: {
+    data: CartUpdateManyMutationInput;
+    where?: CartWhereInput;
+  }) => BatchPayloadPromise;
+  upsertCart: (args: {
+    where: CartWhereUniqueInput;
+    create: CartCreateInput;
+    update: CartUpdateInput;
+  }) => CartPromise;
+  deleteCart: (where: CartWhereUniqueInput) => CartPromise;
+  deleteManyCarts: (where?: CartWhereInput) => BatchPayloadPromise;
   createItem: (data: ItemCreateInput) => ItemPromise;
   updateItem: (args: {
     data: ItemUpdateInput;
@@ -160,6 +196,9 @@ export interface Prisma {
 }
 
 export interface Subscription {
+  cart: (
+    where?: CartSubscriptionWhereInput
+  ) => CartSubscriptionPayloadSubscription;
   item: (
     where?: ItemSubscriptionWhereInput
   ) => ItemSubscriptionPayloadSubscription;
@@ -178,6 +217,12 @@ export interface ClientConstructor<T> {
 /**
  * Types
  */
+
+export type CartOrderByInput =
+  | "id_ASC"
+  | "id_DESC"
+  | "count_ASC"
+  | "count_DESC";
 
 export type ItemOrderByInput =
   | "id_ASC"
@@ -209,18 +254,18 @@ export type UserOrderByInput =
 
 export type MutationType = "CREATED" | "UPDATED" | "DELETED";
 
-export interface PostUpdateWithoutAuthidDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
+export interface CartUpdateWithWhereUniqueWithoutItemInput {
+  where: CartWhereUniqueInput;
+  data: CartUpdateWithoutItemDataInput;
 }
 
-export type ItemWhereUniqueInput = AtLeastOne<{
+export type CartWhereUniqueInput = AtLeastOne<{
   id: Maybe<ID_Input>;
 }>;
 
-export interface PostUpdateManyWithWhereNestedInput {
-  where: PostScalarWhereInput;
-  data: PostUpdateManyDataInput;
+export interface CartUpdateManyWithWhereNestedInput {
+  where: CartScalarWhereInput;
+  data: CartUpdateManyDataInput;
 }
 
 export interface UserWhereInput {
@@ -280,6 +325,9 @@ export interface UserWhereInput {
   password_not_starts_with?: Maybe<String>;
   password_ends_with?: Maybe<String>;
   password_not_ends_with?: Maybe<String>;
+  carts_every?: Maybe<CartWhereInput>;
+  carts_some?: Maybe<CartWhereInput>;
+  carts_none?: Maybe<CartWhereInput>;
   items_every?: Maybe<ItemWhereInput>;
   items_some?: Maybe<ItemWhereInput>;
   items_none?: Maybe<ItemWhereInput>;
@@ -291,250 +339,8 @@ export interface UserWhereInput {
   NOT?: Maybe<UserWhereInput[] | UserWhereInput>;
 }
 
-export interface UserCreateWithoutItemsInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  posts?: Maybe<PostCreateManyWithoutAuthidInput>;
-}
-
-export interface ItemCreateWithoutAuthidInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  img?: Maybe<String>;
-}
-
-export interface PostCreateManyWithoutAuthidInput {
-  create?: Maybe<PostCreateWithoutAuthidInput[] | PostCreateWithoutAuthidInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-}
-
-export interface PostUpdateManyDataInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-}
-
-export interface PostCreateWithoutAuthidInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-}
-
-export interface PostSubscriptionWhereInput {
-  mutation_in?: Maybe<MutationType[] | MutationType>;
-  updatedFields_contains?: Maybe<String>;
-  updatedFields_contains_every?: Maybe<String[] | String>;
-  updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<PostWhereInput>;
-  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
-}
-
-export interface ItemUpdateInput {
-  name?: Maybe<String>;
-  authid?: Maybe<UserUpdateOneWithoutItemsInput>;
-  img?: Maybe<String>;
-}
-
-export interface UserUpdateManyMutationInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-}
-
-export interface UserUpdateOneWithoutItemsInput {
-  create?: Maybe<UserCreateWithoutItemsInput>;
-  update?: Maybe<UserUpdateWithoutItemsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutItemsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface UserCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  items?: Maybe<ItemCreateManyWithoutAuthidInput>;
-  posts?: Maybe<PostCreateManyWithoutAuthidInput>;
-}
-
-export interface UserUpdateWithoutItemsDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  posts?: Maybe<PostUpdateManyWithoutAuthidInput>;
-}
-
-export interface UserUpsertWithoutPostsInput {
-  update: UserUpdateWithoutPostsDataInput;
-  create: UserCreateWithoutPostsInput;
-}
-
-export interface PostUpdateManyWithoutAuthidInput {
-  create?: Maybe<PostCreateWithoutAuthidInput[] | PostCreateWithoutAuthidInput>;
-  delete?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  set?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  disconnect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
-  update?: Maybe<
-    | PostUpdateWithWhereUniqueWithoutAuthidInput[]
-    | PostUpdateWithWhereUniqueWithoutAuthidInput
-  >;
-  upsert?: Maybe<
-    | PostUpsertWithWhereUniqueWithoutAuthidInput[]
-    | PostUpsertWithWhereUniqueWithoutAuthidInput
-  >;
-  deleteMany?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  updateMany?: Maybe<
-    PostUpdateManyWithWhereNestedInput[] | PostUpdateManyWithWhereNestedInput
-  >;
-}
-
-export interface ItemUpdateManyDataInput {
-  name?: Maybe<String>;
-  img?: Maybe<String>;
-}
-
-export interface PostUpdateWithWhereUniqueWithoutAuthidInput {
-  where: PostWhereUniqueInput;
-  data: PostUpdateWithoutAuthidDataInput;
-}
-
-export interface ItemScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  img?: Maybe<String>;
-  img_not?: Maybe<String>;
-  img_in?: Maybe<String[] | String>;
-  img_not_in?: Maybe<String[] | String>;
-  img_lt?: Maybe<String>;
-  img_lte?: Maybe<String>;
-  img_gt?: Maybe<String>;
-  img_gte?: Maybe<String>;
-  img_contains?: Maybe<String>;
-  img_not_contains?: Maybe<String>;
-  img_starts_with?: Maybe<String>;
-  img_not_starts_with?: Maybe<String>;
-  img_ends_with?: Maybe<String>;
-  img_not_ends_with?: Maybe<String>;
-  AND?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
-  OR?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
-  NOT?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
-}
-
-export interface UserUpdateWithoutPostsDataInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  items?: Maybe<ItemUpdateManyWithoutAuthidInput>;
-}
-
-export interface ItemUpsertWithWhereUniqueWithoutAuthidInput {
-  where: ItemWhereUniqueInput;
-  update: ItemUpdateWithoutAuthidDataInput;
-  create: ItemCreateWithoutAuthidInput;
-}
-
-export interface PostUpsertWithWhereUniqueWithoutAuthidInput {
-  where: PostWhereUniqueInput;
-  update: PostUpdateWithoutAuthidDataInput;
-  create: PostCreateWithoutAuthidInput;
-}
-
-export interface ItemUpdateWithWhereUniqueWithoutAuthidInput {
-  where: ItemWhereUniqueInput;
-  data: ItemUpdateWithoutAuthidDataInput;
-}
-
-export interface PostScalarWhereInput {
-  id?: Maybe<ID_Input>;
-  id_not?: Maybe<ID_Input>;
-  id_in?: Maybe<ID_Input[] | ID_Input>;
-  id_not_in?: Maybe<ID_Input[] | ID_Input>;
-  id_lt?: Maybe<ID_Input>;
-  id_lte?: Maybe<ID_Input>;
-  id_gt?: Maybe<ID_Input>;
-  id_gte?: Maybe<ID_Input>;
-  id_contains?: Maybe<ID_Input>;
-  id_not_contains?: Maybe<ID_Input>;
-  id_starts_with?: Maybe<ID_Input>;
-  id_not_starts_with?: Maybe<ID_Input>;
-  id_ends_with?: Maybe<ID_Input>;
-  id_not_ends_with?: Maybe<ID_Input>;
-  name?: Maybe<String>;
-  name_not?: Maybe<String>;
-  name_in?: Maybe<String[] | String>;
-  name_not_in?: Maybe<String[] | String>;
-  name_lt?: Maybe<String>;
-  name_lte?: Maybe<String>;
-  name_gt?: Maybe<String>;
-  name_gte?: Maybe<String>;
-  name_contains?: Maybe<String>;
-  name_not_contains?: Maybe<String>;
-  name_starts_with?: Maybe<String>;
-  name_not_starts_with?: Maybe<String>;
-  name_ends_with?: Maybe<String>;
-  name_not_ends_with?: Maybe<String>;
-  createdAt?: Maybe<DateTimeInput>;
-  createdAt_not?: Maybe<DateTimeInput>;
-  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
-  createdAt_lt?: Maybe<DateTimeInput>;
-  createdAt_lte?: Maybe<DateTimeInput>;
-  createdAt_gt?: Maybe<DateTimeInput>;
-  createdAt_gte?: Maybe<DateTimeInput>;
-  description?: Maybe<String>;
-  description_not?: Maybe<String>;
-  description_in?: Maybe<String[] | String>;
-  description_not_in?: Maybe<String[] | String>;
-  description_lt?: Maybe<String>;
-  description_lte?: Maybe<String>;
-  description_gt?: Maybe<String>;
-  description_gte?: Maybe<String>;
-  description_contains?: Maybe<String>;
-  description_not_contains?: Maybe<String>;
-  description_starts_with?: Maybe<String>;
-  description_not_starts_with?: Maybe<String>;
-  description_ends_with?: Maybe<String>;
-  description_not_ends_with?: Maybe<String>;
-  AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  OR?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-  NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
-}
-
-export interface UserCreateOneWithoutItemsInput {
-  create?: Maybe<UserCreateWithoutItemsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface CartUpdateManyDataInput {
+  count?: Maybe<Int>;
 }
 
 export interface PostWhereInput {
@@ -594,15 +400,298 @@ export interface PostWhereInput {
   NOT?: Maybe<PostWhereInput[] | PostWhereInput>;
 }
 
-export interface ItemSubscriptionWhereInput {
+export interface ItemUpsertWithWhereUniqueWithoutAuthidInput {
+  where: ItemWhereUniqueInput;
+  update: ItemUpdateWithoutAuthidDataInput;
+  create: ItemCreateWithoutAuthidInput;
+}
+
+export interface CartWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  count?: Maybe<Int>;
+  count_not?: Maybe<Int>;
+  count_in?: Maybe<Int[] | Int>;
+  count_not_in?: Maybe<Int[] | Int>;
+  count_lt?: Maybe<Int>;
+  count_lte?: Maybe<Int>;
+  count_gt?: Maybe<Int>;
+  count_gte?: Maybe<Int>;
+  user?: Maybe<UserWhereInput>;
+  item?: Maybe<ItemWhereInput>;
+  AND?: Maybe<CartWhereInput[] | CartWhereInput>;
+  OR?: Maybe<CartWhereInput[] | CartWhereInput>;
+  NOT?: Maybe<CartWhereInput[] | CartWhereInput>;
+}
+
+export interface CartCreateWithoutUserInput {
+  id?: Maybe<ID_Input>;
+  count?: Maybe<Int>;
+  item: ItemCreateOneWithoutCartsInput;
+}
+
+export interface UserUpsertWithoutItemsInput {
+  update: UserUpdateWithoutItemsDataInput;
+  create: UserCreateWithoutItemsInput;
+}
+
+export interface CartUpdateInput {
+  count?: Maybe<Int>;
+  user?: Maybe<UserUpdateOneRequiredWithoutCartsInput>;
+  item?: Maybe<ItemUpdateOneRequiredWithoutCartsInput>;
+}
+
+export interface ItemScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  img?: Maybe<String>;
+  img_not?: Maybe<String>;
+  img_in?: Maybe<String[] | String>;
+  img_not_in?: Maybe<String[] | String>;
+  img_lt?: Maybe<String>;
+  img_lte?: Maybe<String>;
+  img_gt?: Maybe<String>;
+  img_gte?: Maybe<String>;
+  img_contains?: Maybe<String>;
+  img_not_contains?: Maybe<String>;
+  img_starts_with?: Maybe<String>;
+  img_not_starts_with?: Maybe<String>;
+  img_ends_with?: Maybe<String>;
+  img_not_ends_with?: Maybe<String>;
+  AND?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
+  OR?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
+  NOT?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
+}
+
+export interface UserUpdateOneRequiredWithoutCartsInput {
+  create?: Maybe<UserCreateWithoutCartsInput>;
+  update?: Maybe<UserUpdateWithoutCartsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutCartsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface PostSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
   updatedFields_contains?: Maybe<String>;
   updatedFields_contains_every?: Maybe<String[] | String>;
   updatedFields_contains_some?: Maybe<String[] | String>;
-  node?: Maybe<ItemWhereInput>;
-  AND?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
-  OR?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
-  NOT?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
+  node?: Maybe<PostWhereInput>;
+  AND?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  OR?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+  NOT?: Maybe<PostSubscriptionWhereInput[] | PostSubscriptionWhereInput>;
+}
+
+export interface UserUpdateWithoutCartsDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  items?: Maybe<ItemUpdateManyWithoutAuthidInput>;
+  posts?: Maybe<PostUpdateManyWithoutAuthidInput>;
+}
+
+export interface CartSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<CartWhereInput>;
+  AND?: Maybe<CartSubscriptionWhereInput[] | CartSubscriptionWhereInput>;
+  OR?: Maybe<CartSubscriptionWhereInput[] | CartSubscriptionWhereInput>;
+  NOT?: Maybe<CartSubscriptionWhereInput[] | CartSubscriptionWhereInput>;
+}
+
+export interface ItemUpdateManyWithoutAuthidInput {
+  create?: Maybe<ItemCreateWithoutAuthidInput[] | ItemCreateWithoutAuthidInput>;
+  delete?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
+  connect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
+  set?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
+  disconnect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
+  update?: Maybe<
+    | ItemUpdateWithWhereUniqueWithoutAuthidInput[]
+    | ItemUpdateWithWhereUniqueWithoutAuthidInput
+  >;
+  upsert?: Maybe<
+    | ItemUpsertWithWhereUniqueWithoutAuthidInput[]
+    | ItemUpsertWithWhereUniqueWithoutAuthidInput
+  >;
+  deleteMany?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
+  updateMany?: Maybe<
+    ItemUpdateManyWithWhereNestedInput[] | ItemUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  carts?: Maybe<CartUpdateManyWithoutUserInput>;
+  items?: Maybe<ItemUpdateManyWithoutAuthidInput>;
+  posts?: Maybe<PostUpdateManyWithoutAuthidInput>;
+}
+
+export interface ItemUpdateWithWhereUniqueWithoutAuthidInput {
+  where: ItemWhereUniqueInput;
+  data: ItemUpdateWithoutAuthidDataInput;
+}
+
+export interface UserCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  carts?: Maybe<CartCreateManyWithoutUserInput>;
+  items?: Maybe<ItemCreateManyWithoutAuthidInput>;
+  posts?: Maybe<PostCreateManyWithoutAuthidInput>;
+}
+
+export interface ItemUpdateWithoutAuthidDataInput {
+  name?: Maybe<String>;
+  carts?: Maybe<CartUpdateManyWithoutItemInput>;
+  img?: Maybe<String>;
+}
+
+export interface UserUpsertWithoutPostsInput {
+  update: UserUpdateWithoutPostsDataInput;
+  create: UserCreateWithoutPostsInput;
+}
+
+export interface CartUpdateManyWithoutItemInput {
+  create?: Maybe<CartCreateWithoutItemInput[] | CartCreateWithoutItemInput>;
+  delete?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  connect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  set?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  disconnect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  update?: Maybe<
+    | CartUpdateWithWhereUniqueWithoutItemInput[]
+    | CartUpdateWithWhereUniqueWithoutItemInput
+  >;
+  upsert?: Maybe<
+    | CartUpsertWithWhereUniqueWithoutItemInput[]
+    | CartUpsertWithWhereUniqueWithoutItemInput
+  >;
+  deleteMany?: Maybe<CartScalarWhereInput[] | CartScalarWhereInput>;
+  updateMany?: Maybe<
+    CartUpdateManyWithWhereNestedInput[] | CartUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface UserUpdateWithoutPostsDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  carts?: Maybe<CartUpdateManyWithoutUserInput>;
+  items?: Maybe<ItemUpdateManyWithoutAuthidInput>;
+}
+
+export interface ItemUpdateInput {
+  name?: Maybe<String>;
+  authid?: Maybe<UserUpdateOneWithoutItemsInput>;
+  carts?: Maybe<CartUpdateManyWithoutItemInput>;
+  img?: Maybe<String>;
+}
+
+export interface PostUpdateInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+  authid?: Maybe<UserUpdateOneWithoutPostsInput>;
+}
+
+export interface CartUpdateWithoutItemDataInput {
+  count?: Maybe<Int>;
+  user?: Maybe<UserUpdateOneRequiredWithoutCartsInput>;
+}
+
+export interface UserCreateWithoutPostsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  carts?: Maybe<CartCreateManyWithoutUserInput>;
+  items?: Maybe<ItemCreateManyWithoutAuthidInput>;
+}
+
+export interface CartUpsertWithWhereUniqueWithoutItemInput {
+  where: CartWhereUniqueInput;
+  update: CartUpdateWithoutItemDataInput;
+  create: CartCreateWithoutItemInput;
+}
+
+export interface PostCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+  authid?: Maybe<UserCreateOneWithoutPostsInput>;
+}
+
+export interface CartScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  count?: Maybe<Int>;
+  count_not?: Maybe<Int>;
+  count_in?: Maybe<Int[] | Int>;
+  count_not_in?: Maybe<Int[] | Int>;
+  count_lt?: Maybe<Int>;
+  count_lte?: Maybe<Int>;
+  count_gt?: Maybe<Int>;
+  count_gte?: Maybe<Int>;
+  AND?: Maybe<CartScalarWhereInput[] | CartScalarWhereInput>;
+  OR?: Maybe<CartScalarWhereInput[] | CartScalarWhereInput>;
+  NOT?: Maybe<CartScalarWhereInput[] | CartScalarWhereInput>;
+}
+
+export interface UserCreateOneWithoutCartsInput {
+  create?: Maybe<UserCreateWithoutCartsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
 }
 
 export interface ItemWhereInput {
@@ -635,6 +724,9 @@ export interface ItemWhereInput {
   name_ends_with?: Maybe<String>;
   name_not_ends_with?: Maybe<String>;
   authid?: Maybe<UserWhereInput>;
+  carts_every?: Maybe<CartWhereInput>;
+  carts_some?: Maybe<CartWhereInput>;
+  carts_none?: Maybe<CartWhereInput>;
   img?: Maybe<String>;
   img_not?: Maybe<String>;
   img_in?: Maybe<String[] | String>;
@@ -654,14 +746,41 @@ export interface ItemWhereInput {
   NOT?: Maybe<ItemWhereInput[] | ItemWhereInput>;
 }
 
-export interface PostUpdateManyMutationInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
+export interface ItemCreateManyWithoutAuthidInput {
+  create?: Maybe<ItemCreateWithoutAuthidInput[] | ItemCreateWithoutAuthidInput>;
+  connect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
 }
 
-export interface UserUpsertWithoutItemsInput {
-  update: UserUpdateWithoutItemsDataInput;
-  create: UserCreateWithoutItemsInput;
+export interface ItemCreateInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  authid?: Maybe<UserCreateOneWithoutItemsInput>;
+  carts?: Maybe<CartCreateManyWithoutItemInput>;
+  img?: Maybe<String>;
+}
+
+export interface CartCreateManyWithoutItemInput {
+  create?: Maybe<CartCreateWithoutItemInput[] | CartCreateWithoutItemInput>;
+  connect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+}
+
+export interface CartUpdateManyMutationInput {
+  count?: Maybe<Int>;
+}
+
+export interface PostCreateManyWithoutAuthidInput {
+  create?: Maybe<PostCreateWithoutAuthidInput[] | PostCreateWithoutAuthidInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+}
+
+export interface ItemUpsertWithoutCartsInput {
+  update: ItemUpdateWithoutCartsDataInput;
+  create: ItemCreateWithoutCartsInput;
+}
+
+export interface ItemCreateOneWithoutCartsInput {
+  create?: Maybe<ItemCreateWithoutCartsInput>;
+  connect?: Maybe<ItemWhereUniqueInput>;
 }
 
 export interface ItemUpdateManyWithWhereNestedInput {
@@ -669,74 +788,185 @@ export interface ItemUpdateManyWithWhereNestedInput {
   data: ItemUpdateManyDataInput;
 }
 
+export interface UserCreateOneWithoutItemsInput {
+  create?: Maybe<UserCreateWithoutItemsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface ItemUpdateManyDataInput {
+  name?: Maybe<String>;
+  img?: Maybe<String>;
+}
+
+export interface CartCreateManyWithoutUserInput {
+  create?: Maybe<CartCreateWithoutUserInput[] | CartCreateWithoutUserInput>;
+  connect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+}
+
+export interface PostUpdateManyWithoutAuthidInput {
+  create?: Maybe<PostCreateWithoutAuthidInput[] | PostCreateWithoutAuthidInput>;
+  delete?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  connect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  set?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  disconnect?: Maybe<PostWhereUniqueInput[] | PostWhereUniqueInput>;
+  update?: Maybe<
+    | PostUpdateWithWhereUniqueWithoutAuthidInput[]
+    | PostUpdateWithWhereUniqueWithoutAuthidInput
+  >;
+  upsert?: Maybe<
+    | PostUpsertWithWhereUniqueWithoutAuthidInput[]
+    | PostUpsertWithWhereUniqueWithoutAuthidInput
+  >;
+  deleteMany?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  updateMany?: Maybe<
+    PostUpdateManyWithWhereNestedInput[] | PostUpdateManyWithWhereNestedInput
+  >;
+}
+
+export interface ItemSubscriptionWhereInput {
+  mutation_in?: Maybe<MutationType[] | MutationType>;
+  updatedFields_contains?: Maybe<String>;
+  updatedFields_contains_every?: Maybe<String[] | String>;
+  updatedFields_contains_some?: Maybe<String[] | String>;
+  node?: Maybe<ItemWhereInput>;
+  AND?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
+  OR?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
+  NOT?: Maybe<ItemSubscriptionWhereInput[] | ItemSubscriptionWhereInput>;
+}
+
+export interface PostUpdateWithWhereUniqueWithoutAuthidInput {
+  where: PostWhereUniqueInput;
+  data: PostUpdateWithoutAuthidDataInput;
+}
+
+export type ItemWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface PostUpdateWithoutAuthidDataInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export type PostWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+}>;
+
+export interface PostUpsertWithWhereUniqueWithoutAuthidInput {
+  where: PostWhereUniqueInput;
+  update: PostUpdateWithoutAuthidDataInput;
+  create: PostCreateWithoutAuthidInput;
+}
+
+export type UserWhereUniqueInput = AtLeastOne<{
+  id: Maybe<ID_Input>;
+  email?: Maybe<String>;
+}>;
+
+export interface PostScalarWhereInput {
+  id?: Maybe<ID_Input>;
+  id_not?: Maybe<ID_Input>;
+  id_in?: Maybe<ID_Input[] | ID_Input>;
+  id_not_in?: Maybe<ID_Input[] | ID_Input>;
+  id_lt?: Maybe<ID_Input>;
+  id_lte?: Maybe<ID_Input>;
+  id_gt?: Maybe<ID_Input>;
+  id_gte?: Maybe<ID_Input>;
+  id_contains?: Maybe<ID_Input>;
+  id_not_contains?: Maybe<ID_Input>;
+  id_starts_with?: Maybe<ID_Input>;
+  id_not_starts_with?: Maybe<ID_Input>;
+  id_ends_with?: Maybe<ID_Input>;
+  id_not_ends_with?: Maybe<ID_Input>;
+  name?: Maybe<String>;
+  name_not?: Maybe<String>;
+  name_in?: Maybe<String[] | String>;
+  name_not_in?: Maybe<String[] | String>;
+  name_lt?: Maybe<String>;
+  name_lte?: Maybe<String>;
+  name_gt?: Maybe<String>;
+  name_gte?: Maybe<String>;
+  name_contains?: Maybe<String>;
+  name_not_contains?: Maybe<String>;
+  name_starts_with?: Maybe<String>;
+  name_not_starts_with?: Maybe<String>;
+  name_ends_with?: Maybe<String>;
+  name_not_ends_with?: Maybe<String>;
+  createdAt?: Maybe<DateTimeInput>;
+  createdAt_not?: Maybe<DateTimeInput>;
+  createdAt_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_not_in?: Maybe<DateTimeInput[] | DateTimeInput>;
+  createdAt_lt?: Maybe<DateTimeInput>;
+  createdAt_lte?: Maybe<DateTimeInput>;
+  createdAt_gt?: Maybe<DateTimeInput>;
+  createdAt_gte?: Maybe<DateTimeInput>;
+  description?: Maybe<String>;
+  description_not?: Maybe<String>;
+  description_in?: Maybe<String[] | String>;
+  description_not_in?: Maybe<String[] | String>;
+  description_lt?: Maybe<String>;
+  description_lte?: Maybe<String>;
+  description_gt?: Maybe<String>;
+  description_gte?: Maybe<String>;
+  description_contains?: Maybe<String>;
+  description_not_contains?: Maybe<String>;
+  description_starts_with?: Maybe<String>;
+  description_not_starts_with?: Maybe<String>;
+  description_ends_with?: Maybe<String>;
+  description_not_ends_with?: Maybe<String>;
+  AND?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  OR?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+  NOT?: Maybe<PostScalarWhereInput[] | PostScalarWhereInput>;
+}
+
 export interface ItemUpdateManyMutationInput {
   name?: Maybe<String>;
   img?: Maybe<String>;
 }
 
-export interface ItemUpdateWithoutAuthidDataInput {
+export interface PostUpdateManyWithWhereNestedInput {
+  where: PostScalarWhereInput;
+  data: PostUpdateManyDataInput;
+}
+
+export interface UserCreateWithoutCartsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  items?: Maybe<ItemCreateManyWithoutAuthidInput>;
+  posts?: Maybe<PostCreateManyWithoutAuthidInput>;
+}
+
+export interface PostUpdateManyDataInput {
   name?: Maybe<String>;
-  img?: Maybe<String>;
+  description?: Maybe<String>;
 }
 
-export interface UserUpdateOneWithoutPostsInput {
-  create?: Maybe<UserCreateWithoutPostsInput>;
-  update?: Maybe<UserUpdateWithoutPostsDataInput>;
-  upsert?: Maybe<UserUpsertWithoutPostsInput>;
-  delete?: Maybe<Boolean>;
-  disconnect?: Maybe<Boolean>;
-  connect?: Maybe<UserWhereUniqueInput>;
+export interface CartCreateWithoutItemInput {
+  id?: Maybe<ID_Input>;
+  count?: Maybe<Int>;
+  user: UserCreateOneWithoutCartsInput;
 }
 
-export interface ItemCreateInput {
+export interface UserUpsertWithoutCartsInput {
+  update: UserUpdateWithoutCartsDataInput;
+  create: UserCreateWithoutCartsInput;
+}
+
+export interface ItemCreateWithoutCartsInput {
   id?: Maybe<ID_Input>;
   name: String;
   authid?: Maybe<UserCreateOneWithoutItemsInput>;
   img?: Maybe<String>;
 }
 
-export interface PostUpdateInput {
-  name?: Maybe<String>;
-  description?: Maybe<String>;
-  authid?: Maybe<UserUpdateOneWithoutPostsInput>;
+export interface ItemUpdateOneRequiredWithoutCartsInput {
+  create?: Maybe<ItemCreateWithoutCartsInput>;
+  update?: Maybe<ItemUpdateWithoutCartsDataInput>;
+  upsert?: Maybe<ItemUpsertWithoutCartsInput>;
+  connect?: Maybe<ItemWhereUniqueInput>;
 }
-
-export interface UserUpdateInput {
-  name?: Maybe<String>;
-  email?: Maybe<String>;
-  password?: Maybe<String>;
-  items?: Maybe<ItemUpdateManyWithoutAuthidInput>;
-  posts?: Maybe<PostUpdateManyWithoutAuthidInput>;
-}
-
-export interface ItemCreateManyWithoutAuthidInput {
-  create?: Maybe<ItemCreateWithoutAuthidInput[] | ItemCreateWithoutAuthidInput>;
-  connect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
-}
-
-export interface UserCreateWithoutPostsInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  email: String;
-  password: String;
-  items?: Maybe<ItemCreateManyWithoutAuthidInput>;
-}
-
-export interface UserCreateOneWithoutPostsInput {
-  create?: Maybe<UserCreateWithoutPostsInput>;
-  connect?: Maybe<UserWhereUniqueInput>;
-}
-
-export interface PostCreateInput {
-  id?: Maybe<ID_Input>;
-  name: String;
-  description?: Maybe<String>;
-  authid?: Maybe<UserCreateOneWithoutPostsInput>;
-}
-
-export type PostWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
-}>;
 
 export interface UserSubscriptionWhereInput {
   mutation_in?: Maybe<MutationType[] | MutationType>;
@@ -749,30 +979,118 @@ export interface UserSubscriptionWhereInput {
   NOT?: Maybe<UserSubscriptionWhereInput[] | UserSubscriptionWhereInput>;
 }
 
-export interface ItemUpdateManyWithoutAuthidInput {
-  create?: Maybe<ItemCreateWithoutAuthidInput[] | ItemCreateWithoutAuthidInput>;
-  delete?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
-  connect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
-  set?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
-  disconnect?: Maybe<ItemWhereUniqueInput[] | ItemWhereUniqueInput>;
+export interface ItemUpdateWithoutCartsDataInput {
+  name?: Maybe<String>;
+  authid?: Maybe<UserUpdateOneWithoutItemsInput>;
+  img?: Maybe<String>;
+}
+
+export interface PostUpdateManyMutationInput {
+  name?: Maybe<String>;
+  description?: Maybe<String>;
+}
+
+export interface UserUpdateOneWithoutItemsInput {
+  create?: Maybe<UserCreateWithoutItemsInput>;
+  update?: Maybe<UserUpdateWithoutItemsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutItemsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserCreateOneWithoutPostsInput {
+  create?: Maybe<UserCreateWithoutPostsInput>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateWithoutItemsDataInput {
+  name?: Maybe<String>;
+  email?: Maybe<String>;
+  password?: Maybe<String>;
+  carts?: Maybe<CartUpdateManyWithoutUserInput>;
+  posts?: Maybe<PostUpdateManyWithoutAuthidInput>;
+}
+
+export interface ItemCreateWithoutAuthidInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  carts?: Maybe<CartCreateManyWithoutItemInput>;
+  img?: Maybe<String>;
+}
+
+export interface CartUpsertWithWhereUniqueWithoutUserInput {
+  where: CartWhereUniqueInput;
+  update: CartUpdateWithoutUserDataInput;
+  create: CartCreateWithoutUserInput;
+}
+
+export interface CartUpdateWithoutUserDataInput {
+  count?: Maybe<Int>;
+  item?: Maybe<ItemUpdateOneRequiredWithoutCartsInput>;
+}
+
+export interface CartUpdateWithWhereUniqueWithoutUserInput {
+  where: CartWhereUniqueInput;
+  data: CartUpdateWithoutUserDataInput;
+}
+
+export interface CartUpdateManyWithoutUserInput {
+  create?: Maybe<CartCreateWithoutUserInput[] | CartCreateWithoutUserInput>;
+  delete?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  connect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  set?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
+  disconnect?: Maybe<CartWhereUniqueInput[] | CartWhereUniqueInput>;
   update?: Maybe<
-    | ItemUpdateWithWhereUniqueWithoutAuthidInput[]
-    | ItemUpdateWithWhereUniqueWithoutAuthidInput
+    | CartUpdateWithWhereUniqueWithoutUserInput[]
+    | CartUpdateWithWhereUniqueWithoutUserInput
   >;
   upsert?: Maybe<
-    | ItemUpsertWithWhereUniqueWithoutAuthidInput[]
-    | ItemUpsertWithWhereUniqueWithoutAuthidInput
+    | CartUpsertWithWhereUniqueWithoutUserInput[]
+    | CartUpsertWithWhereUniqueWithoutUserInput
   >;
-  deleteMany?: Maybe<ItemScalarWhereInput[] | ItemScalarWhereInput>;
+  deleteMany?: Maybe<CartScalarWhereInput[] | CartScalarWhereInput>;
   updateMany?: Maybe<
-    ItemUpdateManyWithWhereNestedInput[] | ItemUpdateManyWithWhereNestedInput
+    CartUpdateManyWithWhereNestedInput[] | CartUpdateManyWithWhereNestedInput
   >;
 }
 
-export type UserWhereUniqueInput = AtLeastOne<{
-  id: Maybe<ID_Input>;
+export interface PostCreateWithoutAuthidInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  description?: Maybe<String>;
+}
+
+export interface CartCreateInput {
+  id?: Maybe<ID_Input>;
+  count?: Maybe<Int>;
+  user: UserCreateOneWithoutCartsInput;
+  item: ItemCreateOneWithoutCartsInput;
+}
+
+export interface UserUpdateOneWithoutPostsInput {
+  create?: Maybe<UserCreateWithoutPostsInput>;
+  update?: Maybe<UserUpdateWithoutPostsDataInput>;
+  upsert?: Maybe<UserUpsertWithoutPostsInput>;
+  delete?: Maybe<Boolean>;
+  disconnect?: Maybe<Boolean>;
+  connect?: Maybe<UserWhereUniqueInput>;
+}
+
+export interface UserUpdateManyMutationInput {
+  name?: Maybe<String>;
   email?: Maybe<String>;
-}>;
+  password?: Maybe<String>;
+}
+
+export interface UserCreateWithoutItemsInput {
+  id?: Maybe<ID_Input>;
+  name: String;
+  email: String;
+  password: String;
+  carts?: Maybe<CartCreateManyWithoutUserInput>;
+  posts?: Maybe<PostCreateManyWithoutAuthidInput>;
+}
 
 export interface NodeNode {
   id: ID_Output;
@@ -803,21 +1121,291 @@ export interface UserPreviousValuesSubscription
   password: () => Promise<AsyncIterator<String>>;
 }
 
-export interface ItemEdge {
-  node: Item;
+export interface ItemConnection {
+  pageInfo: PageInfo;
+  edges: ItemEdge[];
+}
+
+export interface ItemConnectionPromise
+  extends Promise<ItemConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<ItemEdge>>() => T;
+  aggregate: <T = AggregateItemPromise>() => T;
+}
+
+export interface ItemConnectionSubscription
+  extends Promise<AsyncIterator<ItemConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<ItemEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateItemSubscription>() => T;
+}
+
+export interface Item {
+  id: ID_Output;
+  name: String;
+  img?: String;
+}
+
+export interface ItemPromise extends Promise<Item>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  authid: <T = UserPromise>() => T;
+  carts: <T = FragmentableArray<Cart>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  img: () => Promise<String>;
+}
+
+export interface ItemSubscription
+  extends Promise<AsyncIterator<Item>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  authid: <T = UserSubscription>() => T;
+  carts: <T = Promise<AsyncIterator<CartSubscription>>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  img: () => Promise<AsyncIterator<String>>;
+}
+
+export interface ItemNullablePromise
+  extends Promise<Item | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  authid: <T = UserPromise>() => T;
+  carts: <T = FragmentableArray<Cart>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  img: () => Promise<String>;
+}
+
+export interface AggregateCart {
+  count: Int;
+}
+
+export interface AggregateCartPromise
+  extends Promise<AggregateCart>,
+    Fragmentable {
+  count: () => Promise<Int>;
+}
+
+export interface AggregateCartSubscription
+  extends Promise<AsyncIterator<AggregateCart>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface User {
+  id: ID_Output;
+  name: String;
+  email: String;
+  password: String;
+}
+
+export interface UserPromise extends Promise<User>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  carts: <T = FragmentableArray<Cart>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  items: <T = FragmentableArray<Item>>(args?: {
+    where?: ItemWhereInput;
+    orderBy?: ItemOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserSubscription
+  extends Promise<AsyncIterator<User>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  email: () => Promise<AsyncIterator<String>>;
+  password: () => Promise<AsyncIterator<String>>;
+  carts: <T = Promise<AsyncIterator<CartSubscription>>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  items: <T = Promise<AsyncIterator<ItemSubscription>>>(args?: {
+    where?: ItemWhereInput;
+    orderBy?: ItemOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface UserNullablePromise
+  extends Promise<User | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  email: () => Promise<String>;
+  password: () => Promise<String>;
+  carts: <T = FragmentableArray<Cart>>(args?: {
+    where?: CartWhereInput;
+    orderBy?: CartOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  items: <T = FragmentableArray<Item>>(args?: {
+    where?: ItemWhereInput;
+    orderBy?: ItemOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+  posts: <T = FragmentableArray<Post>>(args?: {
+    where?: PostWhereInput;
+    orderBy?: PostOrderByInput;
+    skip?: Int;
+    after?: String;
+    before?: String;
+    first?: Int;
+    last?: Int;
+  }) => T;
+}
+
+export interface CartEdge {
+  node: Cart;
   cursor: String;
 }
 
-export interface ItemEdgePromise extends Promise<ItemEdge>, Fragmentable {
-  node: <T = ItemPromise>() => T;
+export interface CartEdgePromise extends Promise<CartEdge>, Fragmentable {
+  node: <T = CartPromise>() => T;
   cursor: () => Promise<String>;
 }
 
-export interface ItemEdgeSubscription
-  extends Promise<AsyncIterator<ItemEdge>>,
+export interface CartEdgeSubscription
+  extends Promise<AsyncIterator<CartEdge>>,
     Fragmentable {
-  node: <T = ItemSubscription>() => T;
+  node: <T = CartSubscription>() => T;
   cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface BatchPayload {
+  count: Long;
+}
+
+export interface BatchPayloadPromise
+  extends Promise<BatchPayload>,
+    Fragmentable {
+  count: () => Promise<Long>;
+}
+
+export interface BatchPayloadSubscription
+  extends Promise<AsyncIterator<BatchPayload>>,
+    Fragmentable {
+  count: () => Promise<AsyncIterator<Long>>;
+}
+
+export interface PostPreviousValues {
+  id: ID_Output;
+  name: String;
+  createdAt: DateTimeOutput;
+  description?: String;
+}
+
+export interface PostPreviousValuesPromise
+  extends Promise<PostPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  name: () => Promise<String>;
+  createdAt: () => Promise<DateTimeOutput>;
+  description: () => Promise<String>;
+}
+
+export interface PostPreviousValuesSubscription
+  extends Promise<AsyncIterator<PostPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  name: () => Promise<AsyncIterator<String>>;
+  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
+  description: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CartConnection {
+  pageInfo: PageInfo;
+  edges: CartEdge[];
+}
+
+export interface CartConnectionPromise
+  extends Promise<CartConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<CartEdge>>() => T;
+  aggregate: <T = AggregateCartPromise>() => T;
+}
+
+export interface CartConnectionSubscription
+  extends Promise<AsyncIterator<CartConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<CartEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateCartSubscription>() => T;
 }
 
 export interface PostSubscriptionPayload {
@@ -845,22 +1433,6 @@ export interface PostSubscriptionPayloadSubscription
   previousValues: <T = PostPreviousValuesSubscription>() => T;
 }
 
-export interface BatchPayload {
-  count: Long;
-}
-
-export interface BatchPayloadPromise
-  extends Promise<BatchPayload>,
-    Fragmentable {
-  count: () => Promise<Long>;
-}
-
-export interface BatchPayloadSubscription
-  extends Promise<AsyncIterator<BatchPayload>>,
-    Fragmentable {
-  count: () => Promise<AsyncIterator<Long>>;
-}
-
 export interface AggregateUser {
   count: Int;
 }
@@ -877,83 +1449,132 @@ export interface AggregateUserSubscription
   count: () => Promise<AsyncIterator<Int>>;
 }
 
-export interface PageInfo {
-  hasNextPage: Boolean;
-  hasPreviousPage: Boolean;
-  startCursor?: String;
-  endCursor?: String;
+export interface UserEdge {
+  node: User;
+  cursor: String;
 }
 
-export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
-  hasNextPage: () => Promise<Boolean>;
-  hasPreviousPage: () => Promise<Boolean>;
-  startCursor: () => Promise<String>;
-  endCursor: () => Promise<String>;
+export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
+  node: <T = UserPromise>() => T;
+  cursor: () => Promise<String>;
 }
 
-export interface PageInfoSubscription
-  extends Promise<AsyncIterator<PageInfo>>,
+export interface UserEdgeSubscription
+  extends Promise<AsyncIterator<UserEdge>>,
     Fragmentable {
-  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
-  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
-  startCursor: () => Promise<AsyncIterator<String>>;
-  endCursor: () => Promise<AsyncIterator<String>>;
+  node: <T = UserSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
 }
 
-export interface UserConnection {
-  pageInfo: PageInfo;
-  edges: UserEdge[];
+export interface UserSubscriptionPayload {
+  mutation: MutationType;
+  node: User;
+  updatedFields: String[];
+  previousValues: UserPreviousValues;
 }
 
-export interface UserConnectionPromise
-  extends Promise<UserConnection>,
+export interface UserSubscriptionPayloadPromise
+  extends Promise<UserSubscriptionPayload>,
     Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<UserEdge>>() => T;
-  aggregate: <T = AggregateUserPromise>() => T;
+  mutation: () => Promise<MutationType>;
+  node: <T = UserPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = UserPreviousValuesPromise>() => T;
 }
 
-export interface UserConnectionSubscription
-  extends Promise<AsyncIterator<UserConnection>>,
+export interface UserSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
     Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateUserSubscription>() => T;
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = UserSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
-export interface ItemConnection {
-  pageInfo: PageInfo;
-  edges: ItemEdge[];
-}
-
-export interface ItemConnectionPromise
-  extends Promise<ItemConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<ItemEdge>>() => T;
-  aggregate: <T = AggregateItemPromise>() => T;
-}
-
-export interface ItemConnectionSubscription
-  extends Promise<AsyncIterator<ItemConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<ItemEdgeSubscription>>>() => T;
-  aggregate: <T = AggregateItemSubscription>() => T;
-}
-
-export interface AggregatePost {
+export interface Cart {
+  id: ID_Output;
   count: Int;
 }
 
-export interface AggregatePostPromise
-  extends Promise<AggregatePost>,
+export interface CartPromise extends Promise<Cart>, Fragmentable {
+  id: () => Promise<ID_Output>;
+  count: () => Promise<Int>;
+  user: <T = UserPromise>() => T;
+  item: <T = ItemPromise>() => T;
+}
+
+export interface CartSubscription
+  extends Promise<AsyncIterator<Cart>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  count: () => Promise<AsyncIterator<Int>>;
+  user: <T = UserSubscription>() => T;
+  item: <T = ItemSubscription>() => T;
+}
+
+export interface CartNullablePromise
+  extends Promise<Cart | null>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  count: () => Promise<Int>;
+  user: <T = UserPromise>() => T;
+  item: <T = ItemPromise>() => T;
+}
+
+export interface PostEdge {
+  node: Post;
+  cursor: String;
+}
+
+export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
+  node: <T = PostPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface PostEdgeSubscription
+  extends Promise<AsyncIterator<PostEdge>>,
+    Fragmentable {
+  node: <T = PostSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CartSubscriptionPayload {
+  mutation: MutationType;
+  node: Cart;
+  updatedFields: String[];
+  previousValues: CartPreviousValues;
+}
+
+export interface CartSubscriptionPayloadPromise
+  extends Promise<CartSubscriptionPayload>,
+    Fragmentable {
+  mutation: () => Promise<MutationType>;
+  node: <T = CartPromise>() => T;
+  updatedFields: () => Promise<String[]>;
+  previousValues: <T = CartPreviousValuesPromise>() => T;
+}
+
+export interface CartSubscriptionPayloadSubscription
+  extends Promise<AsyncIterator<CartSubscriptionPayload>>,
+    Fragmentable {
+  mutation: () => Promise<AsyncIterator<MutationType>>;
+  node: <T = CartSubscription>() => T;
+  updatedFields: () => Promise<AsyncIterator<String[]>>;
+  previousValues: <T = CartPreviousValuesSubscription>() => T;
+}
+
+export interface AggregateItem {
+  count: Int;
+}
+
+export interface AggregateItemPromise
+  extends Promise<AggregateItem>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregatePostSubscription
-  extends Promise<AsyncIterator<AggregatePost>>,
+export interface AggregateItemSubscription
+  extends Promise<AsyncIterator<AggregateItem>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
 }
@@ -991,113 +1612,6 @@ export interface PostNullablePromise
   createdAt: () => Promise<DateTimeOutput>;
   description: () => Promise<String>;
   authid: <T = UserPromise>() => T;
-}
-
-export interface PostConnection {
-  pageInfo: PageInfo;
-  edges: PostEdge[];
-}
-
-export interface PostConnectionPromise
-  extends Promise<PostConnection>,
-    Fragmentable {
-  pageInfo: <T = PageInfoPromise>() => T;
-  edges: <T = FragmentableArray<PostEdge>>() => T;
-  aggregate: <T = AggregatePostPromise>() => T;
-}
-
-export interface PostConnectionSubscription
-  extends Promise<AsyncIterator<PostConnection>>,
-    Fragmentable {
-  pageInfo: <T = PageInfoSubscription>() => T;
-  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
-  aggregate: <T = AggregatePostSubscription>() => T;
-}
-
-export interface User {
-  id: ID_Output;
-  name: String;
-  email: String;
-  password: String;
-}
-
-export interface UserPromise extends Promise<User>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  items: <T = FragmentableArray<Item>>(args?: {
-    where?: ItemWhereInput;
-    orderBy?: ItemOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface UserSubscription
-  extends Promise<AsyncIterator<User>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  email: () => Promise<AsyncIterator<String>>;
-  password: () => Promise<AsyncIterator<String>>;
-  items: <T = Promise<AsyncIterator<ItemSubscription>>>(args?: {
-    where?: ItemWhereInput;
-    orderBy?: ItemOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  posts: <T = Promise<AsyncIterator<PostSubscription>>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-}
-
-export interface UserNullablePromise
-  extends Promise<User | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  email: () => Promise<String>;
-  password: () => Promise<String>;
-  items: <T = FragmentableArray<Item>>(args?: {
-    where?: ItemWhereInput;
-    orderBy?: ItemOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
-  posts: <T = FragmentableArray<Post>>(args?: {
-    where?: PostWhereInput;
-    orderBy?: PostOrderByInput;
-    skip?: Int;
-    after?: String;
-    before?: String;
-    first?: Int;
-    last?: Int;
-  }) => T;
 }
 
 export interface ItemPreviousValues {
@@ -1147,135 +1661,121 @@ export interface ItemSubscriptionPayloadSubscription
   previousValues: <T = ItemPreviousValuesSubscription>() => T;
 }
 
-export interface Item {
+export interface PageInfo {
+  hasNextPage: Boolean;
+  hasPreviousPage: Boolean;
+  startCursor?: String;
+  endCursor?: String;
+}
+
+export interface PageInfoPromise extends Promise<PageInfo>, Fragmentable {
+  hasNextPage: () => Promise<Boolean>;
+  hasPreviousPage: () => Promise<Boolean>;
+  startCursor: () => Promise<String>;
+  endCursor: () => Promise<String>;
+}
+
+export interface PageInfoSubscription
+  extends Promise<AsyncIterator<PageInfo>>,
+    Fragmentable {
+  hasNextPage: () => Promise<AsyncIterator<Boolean>>;
+  hasPreviousPage: () => Promise<AsyncIterator<Boolean>>;
+  startCursor: () => Promise<AsyncIterator<String>>;
+  endCursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface CartPreviousValues {
   id: ID_Output;
-  name: String;
-  img?: String;
-}
-
-export interface ItemPromise extends Promise<Item>, Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  authid: <T = UserPromise>() => T;
-  img: () => Promise<String>;
-}
-
-export interface ItemSubscription
-  extends Promise<AsyncIterator<Item>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  authid: <T = UserSubscription>() => T;
-  img: () => Promise<AsyncIterator<String>>;
-}
-
-export interface ItemNullablePromise
-  extends Promise<Item | null>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  authid: <T = UserPromise>() => T;
-  img: () => Promise<String>;
-}
-
-export interface AggregateItem {
   count: Int;
 }
 
-export interface AggregateItemPromise
-  extends Promise<AggregateItem>,
+export interface CartPreviousValuesPromise
+  extends Promise<CartPreviousValues>,
+    Fragmentable {
+  id: () => Promise<ID_Output>;
+  count: () => Promise<Int>;
+}
+
+export interface CartPreviousValuesSubscription
+  extends Promise<AsyncIterator<CartPreviousValues>>,
+    Fragmentable {
+  id: () => Promise<AsyncIterator<ID_Output>>;
+  count: () => Promise<AsyncIterator<Int>>;
+}
+
+export interface UserConnection {
+  pageInfo: PageInfo;
+  edges: UserEdge[];
+}
+
+export interface UserConnectionPromise
+  extends Promise<UserConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<UserEdge>>() => T;
+  aggregate: <T = AggregateUserPromise>() => T;
+}
+
+export interface UserConnectionSubscription
+  extends Promise<AsyncIterator<UserConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<UserEdgeSubscription>>>() => T;
+  aggregate: <T = AggregateUserSubscription>() => T;
+}
+
+export interface ItemEdge {
+  node: Item;
+  cursor: String;
+}
+
+export interface ItemEdgePromise extends Promise<ItemEdge>, Fragmentable {
+  node: <T = ItemPromise>() => T;
+  cursor: () => Promise<String>;
+}
+
+export interface ItemEdgeSubscription
+  extends Promise<AsyncIterator<ItemEdge>>,
+    Fragmentable {
+  node: <T = ItemSubscription>() => T;
+  cursor: () => Promise<AsyncIterator<String>>;
+}
+
+export interface PostConnection {
+  pageInfo: PageInfo;
+  edges: PostEdge[];
+}
+
+export interface PostConnectionPromise
+  extends Promise<PostConnection>,
+    Fragmentable {
+  pageInfo: <T = PageInfoPromise>() => T;
+  edges: <T = FragmentableArray<PostEdge>>() => T;
+  aggregate: <T = AggregatePostPromise>() => T;
+}
+
+export interface PostConnectionSubscription
+  extends Promise<AsyncIterator<PostConnection>>,
+    Fragmentable {
+  pageInfo: <T = PageInfoSubscription>() => T;
+  edges: <T = Promise<AsyncIterator<PostEdgeSubscription>>>() => T;
+  aggregate: <T = AggregatePostSubscription>() => T;
+}
+
+export interface AggregatePost {
+  count: Int;
+}
+
+export interface AggregatePostPromise
+  extends Promise<AggregatePost>,
     Fragmentable {
   count: () => Promise<Int>;
 }
 
-export interface AggregateItemSubscription
-  extends Promise<AsyncIterator<AggregateItem>>,
+export interface AggregatePostSubscription
+  extends Promise<AsyncIterator<AggregatePost>>,
     Fragmentable {
   count: () => Promise<AsyncIterator<Int>>;
-}
-
-export interface PostEdge {
-  node: Post;
-  cursor: String;
-}
-
-export interface PostEdgePromise extends Promise<PostEdge>, Fragmentable {
-  node: <T = PostPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface PostEdgeSubscription
-  extends Promise<AsyncIterator<PostEdge>>,
-    Fragmentable {
-  node: <T = PostSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface PostPreviousValues {
-  id: ID_Output;
-  name: String;
-  createdAt: DateTimeOutput;
-  description?: String;
-}
-
-export interface PostPreviousValuesPromise
-  extends Promise<PostPreviousValues>,
-    Fragmentable {
-  id: () => Promise<ID_Output>;
-  name: () => Promise<String>;
-  createdAt: () => Promise<DateTimeOutput>;
-  description: () => Promise<String>;
-}
-
-export interface PostPreviousValuesSubscription
-  extends Promise<AsyncIterator<PostPreviousValues>>,
-    Fragmentable {
-  id: () => Promise<AsyncIterator<ID_Output>>;
-  name: () => Promise<AsyncIterator<String>>;
-  createdAt: () => Promise<AsyncIterator<DateTimeOutput>>;
-  description: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserEdge {
-  node: User;
-  cursor: String;
-}
-
-export interface UserEdgePromise extends Promise<UserEdge>, Fragmentable {
-  node: <T = UserPromise>() => T;
-  cursor: () => Promise<String>;
-}
-
-export interface UserEdgeSubscription
-  extends Promise<AsyncIterator<UserEdge>>,
-    Fragmentable {
-  node: <T = UserSubscription>() => T;
-  cursor: () => Promise<AsyncIterator<String>>;
-}
-
-export interface UserSubscriptionPayload {
-  mutation: MutationType;
-  node: User;
-  updatedFields: String[];
-  previousValues: UserPreviousValues;
-}
-
-export interface UserSubscriptionPayloadPromise
-  extends Promise<UserSubscriptionPayload>,
-    Fragmentable {
-  mutation: () => Promise<MutationType>;
-  node: <T = UserPromise>() => T;
-  updatedFields: () => Promise<String[]>;
-  previousValues: <T = UserPreviousValuesPromise>() => T;
-}
-
-export interface UserSubscriptionPayloadSubscription
-  extends Promise<AsyncIterator<UserSubscriptionPayload>>,
-    Fragmentable {
-  mutation: () => Promise<AsyncIterator<MutationType>>;
-  node: <T = UserSubscription>() => T;
-  updatedFields: () => Promise<AsyncIterator<String[]>>;
-  previousValues: <T = UserPreviousValuesSubscription>() => T;
 }
 
 /*
@@ -1293,14 +1793,6 @@ DateTime scalar output type, which is always a string
 */
 export type DateTimeOutput = string;
 
-export type Long = string;
-
-/*
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-*/
-export type ID_Input = string | number;
-export type ID_Output = string;
-
 /*
 The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1. 
 */
@@ -1310,6 +1802,14 @@ export type Int = number;
 The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
 */
 export type String = string;
+
+export type Long = string;
+
+/*
+The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
+*/
+export type ID_Input = string | number;
+export type ID_Output = string;
 
 /**
  * Model Metadata
@@ -1322,6 +1822,10 @@ export const models: Model[] = [
   },
   {
     name: "Item",
+    embedded: false
+  },
+  {
+    name: "Cart",
     embedded: false
   },
   {

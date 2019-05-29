@@ -18,7 +18,7 @@ type User {
   id: ID!
   name: String!
   email:String!
-  # carts:[Cart!]!
+  carts:[Cart!]!
   items:[Item!]!
   posts:[Post!]!
 }
@@ -26,15 +26,15 @@ type Item  {
   id: ID! 
   name: String! 
   authid:User
-  # carts:[Cart!]!
+  carts:[Cart!]!
   img:String
 }
-# type Cart{
-#   id: ID! 
-#   count: Int! 
-#   user:User!
-#   item:Item!
-# }
+type Cart{
+  id: ID! 
+  count: Int! 
+  user:User!
+  item:Item!
+}
 
 type Post{
   id: ID! 

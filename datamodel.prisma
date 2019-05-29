@@ -1,0 +1,29 @@
+type User {
+  id: ID! @id
+  name: String!
+  email:String! @unique
+  password:String!
+  # carts:[Cart!]!
+  items:[Item!]!
+  posts:[Post!]!
+}
+type Item  {
+  id: ID! @id
+  name: String! 
+  authid:User
+  # carts:[Cart!]!
+  img:String
+}
+# type Cart{
+#   id: ID! @id
+#   count: Int! @default(value:0) 
+#   user:User!
+#   item:Item!
+# }
+type Post{
+  id: ID! @id
+  name: String!
+  createdAt: DateTime! @createdAt
+  description:String
+  authid:User
+}

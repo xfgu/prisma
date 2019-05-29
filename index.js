@@ -4,7 +4,7 @@ const Query = require('./resolves/Query')
 const Mutation = require('./resolves/Mutation')
 const User = require('./resolves/User')
 const Post = require('./resolves/Post')
-// const Cart = require('./resolves/Cart')
+const Cart = require('./resolves/Cart')
 const Item = require('./resolves/Item')
 
 
@@ -13,7 +13,7 @@ const resolvers = {
   Mutation,
   User,
   Post,
-  // Cart,
+  Cart,
   Item
 };
 

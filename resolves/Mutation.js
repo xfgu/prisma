@@ -51,30 +51,30 @@ function createPost(parent, args, context, info) {
 }
 
 
-// async function addcart(parent, args, context, info) {
-//   // 1
-//   const userId = getUserId(context)
+async function addcart(parent, args, context, info) {
+  // 1
+  // const userId = getUserId(context)
 
-//   // 2
-//   const linkExists = await context.prisma.$exists.cart({
-//     user: { id: userId },
-//     item: { id: args.itemid },
-//   })
-//   if (linkExists) {
-//     throw new Error(`Already voted for link: ${args.itemid}`)
-//   }
+  // // 2
+  // const linkExists = await context.prisma.$exists.cart({
+  //   user: { id: userId },
+  //   item: { id: args.itemid },
+  // })
+  // if (linkExists) {
+  //   throw new Error(`Already voted for link: ${args.itemid}`)
+  // }
 
-//   // 3
-//   return context.prisma.createCart({
-//     user: { connect: { id: userId } },
-//     item: { connect: { id: args.itemid } },
-//   })
-// }
+  // // 3
+  // return context.prisma.createCart({
+  //   user: { connect: { id: userId } },
+  //   item: { connect: { id: args.itemid } },
+  // })
+}
 
 
 module.exports = {
   signup,
   login,
   createPost,
-  // addcart
+  addcart
 }

@@ -10,7 +10,7 @@ type Mutation {
   createItem(name:String!,img:String,carts:String,authid:String):Item!
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
-  # addcart(itemid:ID!):Cart
+  addcart(itemid:ID!):Cart
 }
 
 

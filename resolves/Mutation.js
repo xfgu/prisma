@@ -67,7 +67,7 @@ function createPost(parent, args, context, info) {
 }
 
 
-async function addcart(parent, args, context) {
+async function createCart(parent, args, context) {
   const userId = getUserId(context)
   console.log(userId)
 
@@ -82,7 +82,6 @@ async function addcart(parent, args, context) {
   })
   if (linkExists) {
     return context.prisma.updateCart({
-      ...args,
       date: {
         count:linkExists.count+1
       },
@@ -98,7 +97,6 @@ async function addcart(parent, args, context) {
 
   // 3
   return context.prisma.createCart({
-    ...args,
     user: {
       connect: {
         id: userId
@@ -117,5 +115,5 @@ module.exports = {
   signup,
   login,
   createPost,
-  addcart
+  createCart
 }

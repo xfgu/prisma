@@ -16,7 +16,7 @@ type Item  {
 }
 type Cart{
   id: ID! @id
-  count: Int! @default(value:0) 
+  count: Int! @default(value:1) 
   user:User!
   item:Item!
 }

@@ -72,7 +72,7 @@ async function createCart(parent, args, context) {
   console.log(userId)
 
   // 2
-  const linkExists = await context.prisma.$exists.cart({
+  const [linkExists] = await context.prisma.$exists.cart({
     user: {
       id: userId
     },

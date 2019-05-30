@@ -2,6 +2,7 @@ type Query {
   posts: [Post!]!
   user(id:ID):User
   items:[Item!]!
+  me: User
 }
 
 type Mutation {

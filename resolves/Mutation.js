@@ -69,48 +69,37 @@ function createPost(parent, args, context, info) {
 
 async function createCart(parent, args, context) {
   const userId = getUserId(context)
-  console.log(userId)
+  console.log('userId :', userId);
 
-  // 2
-  const [linkExists] = await context.prisma.$exists.cart({
-    user: {
-      id: userId
-    },
-    item: {
-      id: args.itemid
-    },
-  })
-  if (linkExists) {
-    return context.prisma.updateCart({
-      date: {
-        count:linkExists.count+1
+  const [cart] = await context.prisma.carts({
+    where: {
+      user: {
+        id: userId
       },
-      where: {
-        item: {
-          connect: {
-            id: args.itemid
-          }
-        },
+      item: {
+        id: args.id
       }
+    }
+  })
+  console.log('cart', cart)
+  if(cart){
+    return await context.prisma.updateCart({
+      where: {
+        id: cart.id
+      },
+      data: {
+        count: cart.count + 1,
+      },
+     
     })
   }
-
-  // 3
+  // 如果不存在就创建
   return context.prisma.createCart({
-    user: {
-      connect: {
-        id: userId
-      }
-    },
-    item: {
-      connect: {
-        id: args.itemid
-      }
-    },
+    user: { connect: { id: userId } },
+    item: { connect: { id: args.id } },
   })
+ 
 }
-
-
 module.exports = {
   signup,
   login,

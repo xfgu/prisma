@@ -100,9 +100,16 @@ async function createCart(parent, args, context) {
   })
  
 }
+
+async function deleteCart(parent, args, context) {
+  return context.prisma.deleteCart({id:args.id})
+ 
+}
+
 module.exports = {
   signup,
   login,
   createPost,
-  createCart
+  createCart,
+  deleteCart
 }

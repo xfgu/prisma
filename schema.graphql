@@ -12,6 +12,8 @@ type Mutation {
   signup(email: String!, password: String!, name: String!): AuthPayload
   login(email: String!, password: String!): AuthPayload
   createCart(id:ID!):Cart
+  deleteCart(id:ID!):Cart
+
 }
 
 
